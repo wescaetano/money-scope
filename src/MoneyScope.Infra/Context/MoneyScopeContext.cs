@@ -13,7 +13,8 @@ namespace MoneyScope.Infra.Context
     {
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Profile> Profiles { get; set; } = null!;
-        public DbSet<ProfileModule> ProfileModules { get; set; } = null!;
+        public DbSet<ProfileModule> ProfilesModules { get; set; } = null!;
+        public DbSet<ProfileUser> ProfilesUsers { get; set; } = null!;
         public DbSet<Module> Modules { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

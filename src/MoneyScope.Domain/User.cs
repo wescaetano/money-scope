@@ -18,6 +18,6 @@ namespace MoneyScope.Domain
         public EUserStatus Status { get; set; } = EUserStatus.Ativo;
 
         // Navigation properties
-        public ICollection<Profile> Profiles { get; set; } = [];
+        public ICollection<ProfileUser> ProfilesUsers { get; set; } = [];
     }
 }

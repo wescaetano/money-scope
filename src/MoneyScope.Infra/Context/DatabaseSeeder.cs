@@ -23,7 +23,7 @@ namespace MoneyScope.Infra.Context
 
             modelBuilder.Entity<Profile>().HasData(
                 new Profile { Id = 1, Name = "Admin", Status = EProfileStatus.Ativo },
-                new Profile { Id = 4, Name = "User", Status = EProfileStatus.Ativo }
+                new Profile { Id = 2, Name = "User", Status = EProfileStatus.Ativo }
             );
 
             //PerfilFuncionalidade Admin
@@ -31,10 +31,11 @@ namespace MoneyScope.Infra.Context
                 new ProfileModule { ProfileId = 1, ModuleId = 1, Visualize = true, Edit = true, Register = true, Exclude = true, Inactivate = true }
                 );
 
-            //PerfilFuncionalidade Marketing
+            //PerfilFuncionalidade User
             modelBuilder.Entity<ProfileModule>().HasData(
-                new ProfileModule { ProfileId = 8, ModuleId = 1, Visualize = false, Edit = false, Register = false, Exclude = false, Inactivate = false }
+                new ProfileModule { ProfileId = 2, ModuleId = 1, Visualize = true, Edit = true, Register = true, Exclude = false, Inactivate = true }
                 );
+
 
 
             //usuario
@@ -44,7 +45,8 @@ namespace MoneyScope.Infra.Context
                 Name = "Admin",
                 Email = "admin@admin.com",
                 Status = EUserStatus.Ativo,
-                Password = "$2a$15$5DxGdsCvuzHVigXWk8Qr1uvoizMNxrdxz6SypelRVxC7n1D9uHB7."
+                Password = "$2a$15$5DxGdsCvuzHVigXWk8Qr1uvoizMNxrdxz6SypelRVxC7n1D9uHB7.",
+                CreationDate = DateTime.UtcNow
             };
             adminUser.SetId(1);
 
@@ -53,6 +55,17 @@ namespace MoneyScope.Infra.Context
             modelBuilder.Entity<User>().HasData(
                adminUser
             );
+
+            //ProfileUser
+            modelBuilder.Entity<ProfileUser>().HasData(
+                new ProfileUser
+                {
+                    ProfileId = 1,
+                    UserId = 1
+                }
+            );
         }
     }
 }
+
+

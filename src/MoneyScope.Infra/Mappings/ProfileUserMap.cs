@@ -9,26 +9,26 @@ using System.Threading.Tasks;
 
 namespace MoneyScope.Infra.Mappings
 {
-    public class ProfileModuleMap : IEntityTypeConfiguration<ProfileModule>
+    public class ProfileUserMap : IEntityTypeConfiguration<ProfileUser>
     {
-        public void Configure(EntityTypeBuilder<ProfileModule> builder)
+        public void Configure(EntityTypeBuilder<ProfileUser> builder)
         {
-            builder.ToTable("ProfilesModules");
+            builder.ToTable("ProfilesUsers");
 
             // Chave composta
-            builder.HasKey(u => new { u.ModuleId, u.ProfileId });
+            builder.HasKey(u => new { u.UserId, u.ProfileId });
 
 
             // Relacionamento Profile <-> ProfileModule
             builder.HasOne(u => u.Profile)
-                .WithMany(u => u.ProfilesModules)
+                .WithMany(u => u.ProfilesUsers)
                 .HasForeignKey(u => u.ProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Relacionamento Module <-> ProfileModule
-            builder.HasOne(u => u.Module)
-                .WithMany(u => u.ProfilesModules)
-                .HasForeignKey(u => u.ModuleId)
+            builder.HasOne(u => u.User)
+                .WithMany(u => u.ProfilesUsers)
+                .HasForeignKey(u => u.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
         }

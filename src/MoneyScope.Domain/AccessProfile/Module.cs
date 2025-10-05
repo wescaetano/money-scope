@@ -14,6 +14,6 @@ namespace MoneyScope.Domain.AccessProfile
         public bool Register { get; set; }
         public bool Inactivate { get; set; }
         public bool Exclude { get; set; }
-        public virtual ICollection<ProfileModule> ProfileModules { get; private set; } = [];
+        public virtual ICollection<ProfileModule> ProfilesModules { get; private set; } = [];
     }
 }
