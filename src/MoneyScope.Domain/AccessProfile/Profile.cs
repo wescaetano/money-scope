@@ -11,7 +11,7 @@ namespace MoneyScope.Domain.AccessProfile
     {
         public string Name { get; set; } = null!;
         public EProfileStatus Status { get; set; }
-        public virtual ICollection<User> Users { get; private set; } = [];
-        public virtual ICollection<ProfileModule> ProfileModules { get; set; } = [];
+        public virtual ICollection<ProfileUser> ProfilesUsers { get; private set; } = [];
+        public virtual ICollection<ProfileModule> ProfilesModules { get; set; } = [];
     }
 }
