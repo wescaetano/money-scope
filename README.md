@@ -1,17 +1,17 @@
 
-# 💰 MoneyScope
+# MoneyScope
 
 MoneyScope is an intelligent personal finance management API designed to help users manage their finances in a practical and organized way.
 With it, users can record transactions, set financial goals, create custom categories, and generate financial performance reports.
 
-## 🚀 Objective
+## Objective
 
 - The main focus of the project is:
 - Modular organization for easy maintenance and scalability.
 - Secure authentication and access control.
 - Best architecture practices, applying Clean Architecture and a simplified DDD.
 
-## 🧩 Features
+## Features
 
 - 📊 Record and view financial transactions
 - 🎯 Set savings goals
@@ -19,7 +19,7 @@ With it, users can record transactions, set financial goals, create custom categ
 - 📈 Generate financial performance reports
 - 🔐 User authentication and authorization
 
-## 🏗️ Technologies Used
+## Technologies Used
 
 - .NET 8 / ASP.NET Core
 - Entity Framework Core
