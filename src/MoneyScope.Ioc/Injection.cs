@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MoneyScope.Application.Config;
+using MoneyScope.Application.Interfaces;
+using MoneyScope.Application.Services;
 using MoneyScope.Core.Token;
 using MoneyScope.Infra.Interfaces;
 using MoneyScope.Infra.Repositories;
@@ -24,15 +26,16 @@ namespace MoneyScope.Ioc
             //    }
             //}
 
-
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(IBaseRelationRepository<>), typeof(BaseRelationRepository<>));
             services.AddScoped<IRepositoryFactory, RepositoryFactory>();
 
             //Services
-            //services.AddScoped(typeof(IBaseService), typeof(BaseService));
-            //services.AddScoped(typeof(ITokenService), typeof(TokenService));
-            //services.AddScoped(typeof(IUserService), typeof(UserService));
+            services.AddScoped(typeof(IBaseService), typeof(BaseService));
+            services.AddScoped(typeof(ITokenService), typeof(TokenService));
+            services.AddScoped(typeof(IUserService), typeof(UserService));
+            services.AddScoped(typeof(IBlobService), typeof(BlobService));
+            services.AddScoped(typeof(ISendEmailService), typeof(SendEmailService));
             services.AddScoped(typeof(TokenConfigurations));
 
             return services;
