@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MoneyScope.Api.Extensions;
 using MoneyScope.Api.Middlewares;
 using MoneyScope.Application.Config;
+using MoneyScope.Application.Models.SendEmail;
 using MoneyScope.Core.Token;
 using MoneyScope.Infra.Context;
 using MoneyScope.Ioc;
@@ -34,32 +35,16 @@ builder.Services.AddAuthenticationConfiguration(config);
 builder.Services.AddAuthorizationConfiguration();
 builder.Services.AddSwaggerConfiguration();
 
-//builder.Services.Configure<SmtpConfig>(options =>
-//{
-//    builder.Configuration.GetSection(nameof(SmtpConfig)).Bind(options);
-//});
+builder.Services.Configure<SmtpConfig>(options =>
+{
+    builder.Configuration.GetSection(nameof(SmtpConfig)).Bind(options);
+});
 
 builder.Services.Configure<EnvironmentVars>(options =>
 {
     builder.Configuration.GetSection("Vars").Bind(options);
 });
 
-//builder.Services.Configure<S3Config>(options =>
-//{
-//    builder.Configuration.GetSection(nameof(S3Config)).Bind(options);
-//});
-
-//builder.Services.AddSingleton<IAmazonS3>(sp =>
-//{
-//    var s3Config = builder.Configuration.GetSection("S3Config").Get<S3Config>();
-//    var credentials = new Amazon.Runtime.BasicAWSCredentials(s3Config!.AccessKey, s3Config.SecretKey);
-
-//    return new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(s3Config.Region));
-//});
-
-
-// Instagram Service
-//builder.Services.AddHttpClient<IInstagramService, InstagramService>();
 builder.Services.AddMemoryCache();
 
 var migrationConfig = builder.Configuration.GetSection(nameof(MigrationConfig)).Get<MigrationConfig>();
