@@ -23,6 +23,7 @@ With it, users can record transactions, set financial goals, create custom categ
 
 - .NET 8 / ASP.NET Core
 - Entity Framework Core
+- Azure (Blob Storage)
 - MySQL
 - Clean Architecture
 - JWT Authentication
