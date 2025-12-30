@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyScope.Infra.Context;
 
@@ -11,9 +12,11 @@ using MoneyScope.Infra.Context;
 namespace MoneyScope.Infra.Migrations
 {
     [DbContext(typeof(MoneyScopeContext))]
-    partial class MoneyScopeContextModelSnapshot : ModelSnapshot
+    [Migration("20251229165910_addTransactionCategoryEntityMigration")]
+    partial class addTransactionCategoryEntityMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

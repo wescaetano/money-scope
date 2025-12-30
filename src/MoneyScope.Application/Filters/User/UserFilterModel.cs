@@ -11,5 +11,7 @@ namespace MoneyScope.Application.Filters.User
     public class UserFilterModel : FilterModel
     {
         public EUserStatus? Status { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
     }
 }

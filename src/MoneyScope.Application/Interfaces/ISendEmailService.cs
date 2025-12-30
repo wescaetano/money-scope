@@ -13,6 +13,7 @@ namespace MoneyScope.Application.Interfaces
     {
         Task<ResponseModel<dynamic>> SendEmailResetPassword(string email, ERedefinitionEmailType type = ERedefinitionEmailType.RequestToResetPassword);
         Task<bool> SendEmail(SendEmailModel model, ERedefinitionEmailType type, string name);
+        Task<bool> SendGenericEmail(string to, string subject, string titulo, string texto1, string texto2);
         Task<ResponseModel<dynamic>> ResetPassword(string token, string newPassword);
     }
 }

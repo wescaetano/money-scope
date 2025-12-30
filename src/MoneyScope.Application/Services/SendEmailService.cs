@@ -96,6 +96,64 @@ namespace MoneyScope.Application.Services
 
             return FactoryResponse<dynamic>.Success("Senha definida com sucesso!");
         }
+        private string GetBodyGenericEmail(string titulo, string texto1, string texto2)
+        {
+            var path = Path.Combine(_environment.WebRootPath, $"MailTemplates/{"ConfirmarPagamento"}.html");
+            var body = File.ReadAllText(path);
+
+            var variables = new Dictionary<string, string>
+            {
+                { "#URLLOGO", _configSmtp.UrlLogo },
+                { "#TituloEmail", titulo },
+                { "#TEXTO1", texto1 },
+                { "#TEXTO2", texto2 }
+            };
+
+            foreach (var item in variables)
+                body = body.Replace(item.Key, item.Value);
+
+            return body;
+        }
+        public async Task<bool> SendGenericEmail(string to, string subject, string titulo, string texto1, string texto2)
+        {
+            var client = new SmtpClient
+            {
+                UseDefaultCredentials = _configSmtp.UseDefaultCredentials,
+                Host = _configSmtp.Host,
+                Port = _configSmtp.Port,
+                EnableSsl = _configSmtp.EnableSsl,
+                Credentials = new NetworkCredential(_configSmtp.EmailFrom, _configSmtp.Password)
+            };
+
+            if (client.EnableSsl && ServicePointManager.ServerCertificateValidationCallback == null)
+                ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;
+
+            var body = GetBodyGenericEmail(titulo, texto1, texto2);
+
+            MailMessage message = new()
+            {
+                From = new MailAddress(_configSmtp.EmailFrom, _configSmtp.NameFrom, Encoding.UTF8),
+                IsBodyHtml = true,
+                Body = body,
+                Priority = MailPriority.Normal,
+                Subject = subject,
+                BodyEncoding = Encoding.UTF8,
+                SubjectEncoding = Encoding.UTF8
+            };
+
+            message.To.Add(to);
+
+            try
+            {
+                await Task.Run(() => client.Send(message));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+        }
         public async Task<bool> SendEmail(SendEmailModel model, ERedefinitionEmailType type, string name)
         {
             try
