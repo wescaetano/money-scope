@@ -37,7 +37,7 @@ namespace MoneyScope.Ioc
             services.AddScoped(typeof(IBlobService), typeof(BlobService));
             services.AddScoped(typeof(ISendEmailService), typeof(SendEmailService));
             services.AddScoped(typeof(ITransactionCategoryService), typeof(TransactionCategoryService));
-            //services.AddScoped(typeof(ITransactionService), typeof(TransactionService));
+            services.AddScoped(typeof(ITransactionService), typeof(TransactionService));
             services.AddScoped(typeof(TokenConfigurations));
 
             return services;

@@ -10,6 +10,7 @@ namespace MoneyScope.Application.Models.Transaction
 {
     public class UpdateTransactionModel
     {
+        public long Id { get; set; }
         public long? UserId { get; set; }
         public long? TransactionCategoryId { get; set; }
         public ETransactionType? Type { get; set; }
