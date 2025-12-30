@@ -11,7 +11,6 @@ namespace MoneyScope.Application.Models.User
         public long Id { get; set; }
         public string? Name { get; set; } = null!;
         public string? Email { get; set; } = null!;
-        public string? Password { get; set; }
         public string? ImageUrl { get; set; }
         public long? AccessProfile { get; set; }
     }

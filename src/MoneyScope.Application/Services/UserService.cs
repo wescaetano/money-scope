@@ -1,4 +1,5 @@
-﻿using MoneyScope.Application.Filters.User;
+﻿using Microsoft.EntityFrameworkCore;
+using MoneyScope.Application.Filters.User;
 using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.Token;
 using MoneyScope.Application.Models.User;
@@ -63,19 +64,132 @@ namespace MoneyScope.Application.Services
         }
         public async Task<ResponseModel<dynamic>> Update(UpdateUserModel model)
         {
-            throw new NotImplementedException();
+            var user = await _repository<User>().Get(model.Id);
+            if (user == null) return FactoryResponse<dynamic>.NotFound("Usuário não encontrado!");
+
+            if(model.AccessProfile != null) 
+            {
+                user.ProfilesUsers.Clear();
+                user.ProfilesUsers.Add(new Domain.AccessProfile.ProfileUser { ProfileId = model.AccessProfile.Value });
+            }
+            if(model.Name != null) user.Name = model.Name;
+            if(model.Email != null) user.Email = model.Email;
+
+            // Save the image to blob
+            if (!string.IsNullOrWhiteSpace(model.ImageUrl))
+            {
+                var fileName = $"{Guid.NewGuid()}_{model.Name.Replace(" ", "_")}.png";
+                var imageUrl = await _blobService.UploadBase64Async(model.ImageUrl, fileName);
+                user.ImageUrl = imageUrl;
+            }
+
+            try
+            {
+                await _repository<User>().Update(user);
+                return FactoryResponse<dynamic>.Success("Usuário atualizado com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                return FactoryResponse<dynamic>.BadRequestErroInterno(ex.Message);
+            }
+
         }
         public async Task<ResponseModel<dynamic>> ChangeStatus(ChangeUserStatusModel model)
         {
-            throw new NotImplementedException();
+            var user = await _repository<User>().Get(model.Id);
+            if (user == null) return FactoryResponse<dynamic>.NotFound("Usuário não encontrado!");
+            
+            user.Status = model.Status;
+
+            try
+            {
+                await _repository<User>().Update(user);
+                return FactoryResponse<dynamic>.Success("Status do usuário atualizado com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                return FactoryResponse<dynamic>.BadRequestErroInterno(ex.Message);
+            }
         }
         public async Task<ResponseModel<dynamic>> GetById(long id)
         {
-            throw new NotImplementedException();
+            var user = await _repository<User>().GetWithInclude(x => x.Id == id, i => i.Include(pu => pu.ProfilesUsers));
+            if (user == null) return FactoryResponse<dynamic>.NotFound("Usuário não encontrado!");
+
+            var retrieve = new
+            {
+                user.Id,
+                user.Name,
+                user.Email,
+                user.ImageUrl,
+                user.Status,
+                Profiles = user.ProfilesUsers.Select(pu => new
+                {
+                    pu.Profile.Id,
+                    pu.Profile.Name,
+                })
+            };
+
+            return FactoryResponse<dynamic>.Success(retrieve);
         }
         public async Task<ResponseModel<PaginationData<dynamic>>> GetPaginated(UserFilterModel filter)
         {
-            throw new NotImplementedException();
+            var usersQuery = _repository<User>().GetAllWithInclude(null, null);
+
+            if (filter.Id != null) usersQuery = usersQuery.Where(x => x.Id == filter.Id);
+            if (filter.Name != null) usersQuery = usersQuery.Where(x => x.Name == filter.Name);
+            if (filter.Email != null) usersQuery = usersQuery.Where(x => x.Email == filter.Email);
+
+            var filteredUsers = await usersQuery.ToListAsync();
+            var total = filteredUsers.Count();
+            //var prop = typeof(User).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.SortField.ToLower());
+
+            //if (filter.SortOrder.ToLower() != "desc")
+            //{
+            //    filteredUsers = filteredUsers.OrderBy(x => prop == null ? "Id" : prop.GetValue(x, null)).ToList();
+            //}
+            //else
+            //{
+            //    filteredUsers = filteredUsers.OrderByDescending(x => prop == null ? "Id" : prop.GetValue(x, null)).ToList();
+            //}
+
+            switch (filter.SortField?.ToLower())
+            {
+                case "name":
+                    filteredUsers = filter.SortOrder?.ToLower() != "desc"
+                        ? filteredUsers.OrderBy(x => x.Name).ToList()
+                        : filteredUsers.OrderByDescending(x => x.Name).ToList();
+                    break;
+
+                case "email":
+                    filteredUsers = filter.SortOrder?.ToLower() != "desc"
+                        ? filteredUsers.OrderBy(x => x.Email).ToList()
+                        : filteredUsers.OrderByDescending(x => x.Email).ToList();
+                    break;
+
+                default:
+                    filteredUsers = filter.SortOrder?.ToLower() != "desc"
+                        ? filteredUsers.OrderBy(x => x.Id).ToList()
+                        : filteredUsers.OrderByDescending(x => x.Id).ToList();
+                    break;
+            }
+
+            var retorno = filteredUsers;
+            if (filter.Id == null && filter.PageNumber != null && filter.PageSize != null)
+            {
+                retorno = filteredUsers.Skip(filter.PageSize.Value * (filter.PageNumber.Value - 1)).Take(filter.PageSize.Value).ToList();
+            }
+
+            var usersRetrieve = retorno.Select(x => new
+            {
+                x.Id,
+                x.Name,
+                x.Email,
+                x.ImageUrl,
+                x.Status
+            }).ToList();
+            var paginationData = new PaginationData<dynamic>(usersRetrieve, total, filter);
+            return FactoryResponse<PaginationData<dynamic>>.Success(paginationData);
         }
 
 
@@ -91,7 +205,6 @@ namespace MoneyScope.Application.Services
         public async Task<ResponseModel<dynamic>> SocialLogin(SocialLoginModel model)
         {
             throw new NotImplementedException();
-        }
-      
+        }  
     }
 }

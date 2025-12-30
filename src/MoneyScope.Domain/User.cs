@@ -19,5 +19,6 @@ namespace MoneyScope.Domain
 
         // Navigation properties
         public ICollection<ProfileUser> ProfilesUsers { get; set; } = [];
+        public ICollection<Transaction> Transactions { get; set; } = [];
     }
 }
