@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using MoneyScope.Application.Interfaces;
+using MoneyScope.Application.Models.Report;
 using MoneyScope.Application.Models.SendEmail;
 using MoneyScope.Core.Enums.SendEmail;
 using MoneyScope.Core.Enums.User;
@@ -114,7 +115,7 @@ namespace MoneyScope.Application.Services
 
             return body;
         }
-        public async Task<bool> SendGenericEmail(string to, string subject, string titulo, string texto1, string texto2)
+        public async Task<bool> SendGenericEmail(string to, string subject, string titulo, string texto1, string texto2, List<EmailAttachment>? attachments = null)
         {
             var client = new SmtpClient
             {
@@ -142,6 +143,22 @@ namespace MoneyScope.Application.Services
             };
 
             message.To.Add(to);
+
+            if (attachments != null && attachments.Any())
+            {
+                foreach (var att in attachments)
+                {
+                    var stream = new MemoryStream(att.Content);
+
+                    var attachment = new Attachment(
+                        stream,
+                        att.FileName,
+                        att.ContentType
+                    );
+
+                    message.Attachments.Add(attachment);
+                }
+            }
 
             try
             {

@@ -1,4 +1,5 @@
-﻿using MoneyScope.Application.Models.SendEmail;
+﻿using MoneyScope.Application.Models.Report;
+using MoneyScope.Application.Models.SendEmail;
 using MoneyScope.Core.Enums.SendEmail;
 using MoneyScope.Core.Models;
 using System;
@@ -13,7 +14,7 @@ namespace MoneyScope.Application.Interfaces
     {
         Task<ResponseModel<dynamic>> SendEmailResetPassword(string email, ERedefinitionEmailType type = ERedefinitionEmailType.RequestToResetPassword);
         Task<bool> SendEmail(SendEmailModel model, ERedefinitionEmailType type, string name);
-        Task<bool> SendGenericEmail(string to, string subject, string titulo, string texto1, string texto2);
+        Task<bool> SendGenericEmail(string to, string subject, string titulo, string texto1, string texto2, List<EmailAttachment>? attachments = null);
         Task<ResponseModel<dynamic>> ResetPassword(string token, string newPassword);
     }
 }
