@@ -15,6 +15,7 @@ namespace MoneyScope.Application.Filters.Transaction
         public ETransactionType? Type { get; set; }
         public decimal? StartValue { get; set; }
         public decimal? EndValue { get; set; }
-        public DateTime? Date { get; set; }
+        public int? Month { get; set; }
+        public int? Year { get; set; }
     }
 }

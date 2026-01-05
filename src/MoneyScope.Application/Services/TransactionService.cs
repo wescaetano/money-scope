@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MoneyScope.Application.Services
 {
@@ -81,19 +82,17 @@ namespace MoneyScope.Application.Services
             if (filter.StartValue != null && filter.EndValue == null) transactionQuery = transactionQuery.Where(x => x.Value >= filter.StartValue);
             if (filter.StartValue == null && filter.EndValue != null) transactionQuery = transactionQuery.Where(x => x.Value <= filter.EndValue);
             if (filter.StartValue != null && filter.EndValue != null) transactionQuery = transactionQuery.Where(x => x.Value >= filter.StartValue && x.Value <= filter.EndValue);
+            if (filter.Month != null && filter.Year != null)
+            {
+                if(filter.Month == 0 || filter.Month > 12) return FactoryResponse<PaginationData<dynamic>>.BadRequest("Mês inválido.");
+
+                var startDate = new DateTime(filter.Year.Value, filter.Month.Value, 1);
+                var endDate = startDate.AddMonths(1);
+                transactionQuery = transactionQuery.Where(x => x.Date >= startDate && x.Date < endDate);
+            };
 
             var filteredTransactions = await transactionQuery.ToListAsync();
             var total = filteredTransactions.Count();
-            //var prop = typeof(User).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.SortField.ToLower());
-
-            //if (filter.SortOrder.ToLower() != "desc")
-            //{
-            //    filteredUsers = filteredUsers.OrderBy(x => prop == null ? "Id" : prop.GetValue(x, null)).ToList();
-            //}
-            //else
-            //{
-            //    filteredUsers = filteredUsers.OrderByDescending(x => prop == null ? "Id" : prop.GetValue(x, null)).ToList();
-            //}
 
             switch (filter.SortField?.ToLower())
             {
