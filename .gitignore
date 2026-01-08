@@ -435,11 +435,6 @@ test-results/
 # Icon must end with two \r
 Icon
 
-# App settings
-appsettings.json
-appsettings.*.json
-
-
 # Thumbnails
 ._*
 
