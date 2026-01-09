@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MoneyScope.Api.Authorization;
 using MoneyScope.Application.Filters.Transaction;
 using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.Transaction;
@@ -30,8 +31,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Transactions-C" })]
         [HttpPost("Create")]
-        public async Task<IActionResult> Add([FromBody] CreateTransactionModel model) =>
+        public async Task<IActionResult> Add([FromQuery] CreateTransactionModel model) =>
              Result(await _transactionService.Add(model));
 
 
@@ -40,8 +42,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Transactions-E" })]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] UpdateTransactionModel model) =>
+        public async Task<IActionResult> Update([FromQuery] UpdateTransactionModel model) =>
              Result(await _transactionService.Update(model));
 
 
@@ -50,6 +53,7 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Transactions-V" })]
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] long id) =>
              Result(await _transactionService.GetById(id));
@@ -60,6 +64,7 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Transactions-V" })]
         [HttpGet("GetPaginated")]
         public async Task<IActionResult> GetPaginated([FromQuery] TransactionFilterModel model) =>
              Result(await _transactionService.GetPaginated(model));

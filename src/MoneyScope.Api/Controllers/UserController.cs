@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MoneyScope.Api.Authorization;
 using MoneyScope.Application.Filters.User;
 using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.User;
@@ -27,8 +28,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Users-C" })]
         [HttpPost("CreateUser")]
-        public async Task<IActionResult> Add([FromBody] CreateUserModel model) =>
+        public async Task<IActionResult> Add([FromQuery] CreateUserModel model) =>
              Result(await _userService.Add(model));
 
         /// <summary>
@@ -36,8 +38,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Users-E" })]
         [HttpPut("UpdateUser")]
-        public async Task<IActionResult> Update([FromBody] UpdateUserModel model) =>
+        public async Task<IActionResult> Update([FromQuery] UpdateUserModel model) =>
              Result(await _userService.Update(model));
 
 
@@ -46,8 +49,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Users-I" })]
         [HttpPatch("ChangeStatus")]
-        public async Task<IActionResult> ChangeStatus([FromBody] ChangeUserStatusModel model) =>
+        public async Task<IActionResult> ChangeStatus([FromQuery] ChangeUserStatusModel model) =>
              Result(await _userService.ChangeStatus(model));
 
 
@@ -56,8 +60,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Users-V" })]
         [HttpGet("GetById")]
-        public async Task<IActionResult> GetById([FromBody] long id) =>
+        public async Task<IActionResult> GetById([FromQuery] long id) =>
              Result(await _userService.GetById(id));
 
 
@@ -66,8 +71,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Users-V" })]
         [HttpGet("GetPaginated")]
-        public async Task<IActionResult> GetPaginated([FromBody] UserFilterModel model) =>
+        public async Task<IActionResult> GetPaginated([FromQuery] UserFilterModel model) =>
              Result(await _userService.GetPaginated(model));
 
     }

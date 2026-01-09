@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MoneyScope.Api.Authorization;
 using MoneyScope.Application.Filters.Goal;
 using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.Goal;
@@ -29,8 +30,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Goals-C" })]
         [HttpPost("Create")]
-        public async Task<IActionResult> Add([FromBody] CreateGoalModel model) =>
+        public async Task<IActionResult> Add([FromQuery] CreateGoalModel model) =>
              Result(await _goalService.Add(model));
 
         /// <summary>
@@ -38,8 +40,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Goals-E" })]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] UpdateGoalModel model) =>
+        public async Task<IActionResult> Update([FromQuery] UpdateGoalModel model) =>
              Result(await _goalService.Update(model));
 
 
@@ -48,8 +51,9 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Goals-I" })]
         [HttpPatch("ChangeStatus")]
-        public async Task<IActionResult> ChangeStatus([FromBody] ChangeGoalStatusModel model) =>
+        public async Task<IActionResult> ChangeStatus([FromQuery] ChangeGoalStatusModel model) =>
              Result(await _goalService.ChangeStatus(model));
 
 
@@ -58,6 +62,7 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Goals-V" })]
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] long id) =>
              Result(await _goalService.GetById(id));
@@ -68,6 +73,7 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Goals-V" })]
         [HttpGet("GetPaginated")]
         public async Task<IActionResult> GetPaginated([FromQuery] GoalFilterModel model) =>
              Result(await _goalService.GetPaginated(model));

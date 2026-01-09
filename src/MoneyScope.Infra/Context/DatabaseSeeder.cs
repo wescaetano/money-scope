@@ -16,10 +16,34 @@ namespace MoneyScope.Infra.Context
         public static void Seed(ModelBuilder modelBuilder)
         {
 
-            //Funcionalidades
+            //Modulos
             modelBuilder.Entity<Module>().HasData(
                 new Module { Id = 1, Name = "Users", Visualize = true, Edit = true, Register = true, Inactivate = true, Exclude = true }
                 );
+
+            modelBuilder.Entity<Module>().HasData(
+             new Module { Id = 2, Name = "Auth", Visualize = true, Edit = true, Register = true, Inactivate = true, Exclude = true }
+             );
+
+            modelBuilder.Entity<Module>().HasData(
+             new Module { Id = 3, Name = "Goals", Visualize = true, Edit = true, Register = true, Inactivate = true, Exclude = true }
+             );
+
+            modelBuilder.Entity<Module>().HasData(
+             new Module { Id = 4, Name = "Reports", Visualize = true, Edit = true, Register = true, Inactivate = true, Exclude = true }
+             );
+
+            modelBuilder.Entity<Module>().HasData(
+             new Module { Id = 5, Name = "SendEmail", Visualize = true, Edit = true, Register = true, Inactivate = true, Exclude = true }
+             );
+
+            modelBuilder.Entity<Module>().HasData(
+             new Module { Id = 6, Name = "Transactions", Visualize = true, Edit = true, Register = true, Inactivate = true, Exclude = true }
+             );
+
+            modelBuilder.Entity<Module>().HasData(
+             new Module { Id = 7, Name = "TransactionCategories", Visualize = true, Edit = true, Register = true, Inactivate = true, Exclude = true }
+             );
 
             modelBuilder.Entity<Profile>().HasData(
                 new Profile { Id = 1, Name = "Admin", Status = EProfileStatus.Ativo },
@@ -28,12 +52,24 @@ namespace MoneyScope.Infra.Context
 
             //PerfilFuncionalidade Admin
             modelBuilder.Entity<ProfileModule>().HasData(
-                new ProfileModule { ProfileId = 1, ModuleId = 1, Visualize = true, Edit = true, Register = true, Exclude = true, Inactivate = true }
+                new ProfileModule { ProfileId = 1, ModuleId = 1, Visualize = true, Edit = true, Register = true, Exclude = true, Inactivate = true },
+                new ProfileModule { ProfileId = 1, ModuleId = 2, Visualize = true, Edit = true, Register = true, Exclude = true, Inactivate = true },
+                new ProfileModule { ProfileId = 1, ModuleId = 3, Visualize = true, Edit = true, Register = true, Exclude = true, Inactivate = true },
+                new ProfileModule { ProfileId = 1, ModuleId = 4, Visualize = true, Edit = true, Register = true, Exclude = true, Inactivate = true },
+                new ProfileModule { ProfileId = 1, ModuleId = 5, Visualize = true, Edit = true, Register = true, Exclude = true, Inactivate = true },
+                new ProfileModule { ProfileId = 1, ModuleId = 6, Visualize = true, Edit = true, Register = true, Exclude = true, Inactivate = true },
+                new ProfileModule { ProfileId = 1, ModuleId = 7, Visualize = true, Edit = true, Register = true, Exclude = true, Inactivate = true }
                 );
 
             //PerfilFuncionalidade User
             modelBuilder.Entity<ProfileModule>().HasData(
-                new ProfileModule { ProfileId = 2, ModuleId = 1, Visualize = true, Edit = true, Register = true, Exclude = false, Inactivate = true }
+                new ProfileModule { ProfileId = 2, ModuleId = 1, Visualize = true, Edit = true, Register = true, Exclude = false, Inactivate = true },
+                new ProfileModule { ProfileId = 2, ModuleId = 2, Visualize = true, Edit = true, Register = true, Exclude = false, Inactivate = false },
+                new ProfileModule { ProfileId = 2, ModuleId = 3, Visualize = true, Edit = true, Register = true, Exclude = false, Inactivate = true },
+                new ProfileModule { ProfileId = 2, ModuleId = 4, Visualize = true, Edit = true, Register = true, Exclude = false, Inactivate = true },
+                new ProfileModule { ProfileId = 2, ModuleId = 5, Visualize = true, Edit = true, Register = true, Exclude = false, Inactivate = true },
+                new ProfileModule { ProfileId = 2, ModuleId = 6, Visualize = true, Edit = true, Register = true, Exclude = false, Inactivate = true },
+                new ProfileModule { ProfileId = 2, ModuleId = 7, Visualize = true, Edit = true, Register = true, Exclude = false, Inactivate = true }
                 );
 
 
