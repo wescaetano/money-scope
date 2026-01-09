@@ -21,18 +21,23 @@ namespace MoneyScope.Api.Extensions
                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser().Build();
 
-                List<string> funcionalidades =
+                List<string> modules =
                 [
                     "Users",
-                    "Access Profiles"
+                    "Auth",
+                    "Goals",
+                    "Reports",
+                    "SendEmail",
+                    "Transactions",
+                    "TransactionCategories",
                 ];
-                foreach (var f in funcionalidades)
+                foreach (var m in modules)
                 {
-                    AddAccessByClaimsFuncionality(opt, $"{f}-C");
-                    AddAccessByClaimsFuncionality(opt, $"{f}-E");
-                    AddAccessByClaimsFuncionality(opt, $"{f}-V");
-                    AddAccessByClaimsFuncionality(opt, $"{f}-I");
-                    AddAccessByClaimsFuncionality(opt, $"{f}-EX");
+                    AddAccessByClaimsFuncionality(opt, $"{m}-C");
+                    AddAccessByClaimsFuncionality(opt, $"{m}-E");
+                    AddAccessByClaimsFuncionality(opt, $"{m}-V");
+                    AddAccessByClaimsFuncionality(opt, $"{m}-I");
+                    AddAccessByClaimsFuncionality(opt, $"{m}-EX");
                 }
             });
         }

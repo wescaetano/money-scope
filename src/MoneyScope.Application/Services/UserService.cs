@@ -202,7 +202,7 @@ namespace MoneyScope.Application.Services
         }
         public async Task<ResponseModel<dynamic>> AuthenticateUser(LoginModel model)
         {
-            var user = _repository<User>().GetAllWithInclude(x => x.Email != null && x.Email == model.Login, setIncludes: query => query.Include(u => u.ProfilesUsers).ThenInclude(up => up.Profile)).FirstOrDefault();
+            var user = await _repository<User>().GetWithInclude(x => x.Email != null && x.Email == model.Login, setIncludes: query => query.Include(u => u.ProfilesUsers).ThenInclude(up => up.Profile));
 
             if (user == null || string.IsNullOrEmpty(user.Password))
                 throw new Exception("Usuário não encontrado ou sem senha definida.");

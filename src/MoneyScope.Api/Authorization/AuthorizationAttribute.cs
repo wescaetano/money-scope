@@ -68,7 +68,7 @@ namespace MoneyScope.Api.Authorization
                     break;
                 }
             }
-            filterContext.Result = new JsonResult(FactoryResponse<dynamic>.Forbiden("Perfil")) { StatusCode = StatusCodes.Status403Forbidden };
+            filterContext.Result = new JsonResult(FactoryResponse<dynamic>.Forbiden("Usuário sem autorização de acesso!")) { StatusCode = StatusCodes.Status403Forbidden };
             return;
         }
 

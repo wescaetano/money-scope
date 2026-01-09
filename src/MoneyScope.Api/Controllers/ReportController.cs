@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MoneyScope.Api.Authorization;
 using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.User;
 using MoneyScope.Application.Services;
@@ -29,6 +30,7 @@ namespace MoneyScope.Api.Controllers
         /// <param name="month"></param>
         /// <param name="year"></param>
         /// <returns></returns>
+        [APIAuthorization(new string[] { "Reports-C" })]
         [HttpPost]
         public async Task<IActionResult> SendReport([FromQuery] long userId, int month, int year) =>
              Result(await _reportService.SendMonthlyReportAsync(userId, month, year));
