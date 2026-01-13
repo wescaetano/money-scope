@@ -81,7 +81,7 @@ namespace MoneyScope.Infra.Context
                 Name = "Admin",
                 Email = "admin@admin.com",
                 Status = EUserStatus.Ativo,
-                Password = "$2a$15$XRRBbky2Wyq29Ix75zZaeOGdf7CRBVw9I6C8/KAgQ21OJu9sPl7ZC",
+                Password = "$2a$15$sBUdx5/OPL0bVk3XkHWPnuxFo3xn3zCBwbfUNmWFjBMJ6B4f.mjzi",
                 CreationDate = DateTime.UtcNow
             };
             adminUser.SetId(1);
