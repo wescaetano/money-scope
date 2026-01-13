@@ -32,7 +32,7 @@ namespace MoneyScope.Api.Controllers
         /// <returns></returns>
         [APIAuthorization(new string[] { "Goals-C" })]
         [HttpPost("Create")]
-        public async Task<IActionResult> Add([FromQuery] CreateGoalModel model) =>
+        public async Task<IActionResult> Add([FromBody] CreateGoalModel model) =>
              Result(await _goalService.Add(model));
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace MoneyScope.Api.Controllers
         /// <returns></returns>
         [APIAuthorization(new string[] { "Goals-E" })]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromQuery] UpdateGoalModel model) =>
+        public async Task<IActionResult> Update([FromBody] UpdateGoalModel model) =>
              Result(await _goalService.Update(model));
 
 
