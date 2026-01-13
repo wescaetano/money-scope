@@ -30,7 +30,7 @@ namespace MoneyScope.Api.Controllers
         /// <returns></returns>
         [APIAuthorization(new string[] { "Users-C" })]
         [HttpPost("CreateUser")]
-        public async Task<IActionResult> Add([FromQuery] CreateUserModel model) =>
+        public async Task<IActionResult> Add([FromBody] CreateUserModel model) =>
              Result(await _userService.Add(model));
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace MoneyScope.Api.Controllers
         /// <returns></returns>
         [APIAuthorization(new string[] { "Users-E" })]
         [HttpPut("UpdateUser")]
-        public async Task<IActionResult> Update([FromQuery] UpdateUserModel model) =>
+        public async Task<IActionResult> Update([FromBody] UpdateUserModel model) =>
              Result(await _userService.Update(model));
 
 
