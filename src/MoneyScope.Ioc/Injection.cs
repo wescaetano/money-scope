@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Application.Services;
+using Microsoft.Extensions.DependencyInjection;
 using MoneyScope.Application.Config;
 using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Services;
@@ -41,6 +42,7 @@ namespace MoneyScope.Ioc
             services.AddScoped(typeof(IGoalService), typeof(GoalService));
             services.AddScoped(typeof(IReportService), typeof(ReportService));
             services.AddScoped(typeof(ICsvExportService), typeof(CsvExportService));
+            services.AddScoped(typeof(IReportPdfService), typeof(ReportPdfService));
             services.AddScoped(typeof(TokenConfigurations));
 
             return services;
