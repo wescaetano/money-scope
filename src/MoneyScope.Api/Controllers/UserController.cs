@@ -28,7 +28,7 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [APIAuthorization(new string[] { "Users-C" })]
+        //[APIAuthorization(new string[] { "Users-C" })]
         [HttpPost("CreateUser")]
         public async Task<IActionResult> Add([FromBody] CreateUserModel model) =>
              Result(await _userService.Add(model));
