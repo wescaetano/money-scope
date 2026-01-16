@@ -4,7 +4,6 @@ using System.Reflection;
 
 namespace MoneyScope.Api.Extensions
 {
-
     /// <summary>
     ///
     /// </summary>
@@ -18,7 +17,8 @@ namespace MoneyScope.Api.Extensions
         {
             services.AddSwaggerGen(c =>
             {
-                c.OrderActionsBy((apiDesc) => $"{apiDesc.ActionDescriptor.RouteValues["controller"]}_{apiDesc.RelativePath}");
+                c.OrderActionsBy((apiDesc) =>
+                    $"{apiDesc.ActionDescriptor.RouteValues["controller"]}_{apiDesc.RelativePath}");
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MoneyScope API", Version = "v1.1.1" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -37,22 +37,22 @@ namespace MoneyScope.Api.Extensions
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-        {
-            {
-                new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference
                     {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    },
-                    Scheme = "oauth2",
-                    Name = "Bearer",
-                    In = ParameterLocation.Header,
-                },
-                new List<string>()
-            }
-        });
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    }
+                });
             });
 
             services.Configure<SwaggerUIOptions>(options =>

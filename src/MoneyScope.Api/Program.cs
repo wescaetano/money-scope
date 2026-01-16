@@ -69,7 +69,7 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SantoAndre v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MoneyScope v1");
     c.InjectStylesheet("/swagger-ui/swagger-dark.css");
 });
 
