@@ -43,7 +43,7 @@ namespace MoneyScope.Application.Services
                 Type = tx.Type.ToString(),
                 Category = tx.TransactionCategory.Name,
                 Description = tx.Description,
-                Value = tx.Type == ETransactionType.Despesa
+                Value = tx.Type == ETransactionType.Saida
                     ? -tx.Value
                     : tx.Value
             });

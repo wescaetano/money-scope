@@ -1,6 +1,8 @@
-﻿using MoneyScope.Application.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.Report;
 using MoneyScope.Application.Services;
+using MoneyScope.Core.Enums.Transaction;
 using MoneyScope.Core.Models;
 using MoneyScope.Domain;
 using MoneyScope.Infra.Interfaces;
@@ -38,10 +40,10 @@ namespace Application.Services
             var startDate = new DateTime(year, month, 1);
             var endDate = startDate.AddMonths(1);
 
-            var transactions = await _repository<Transaction>().GetAll(t =>
+            var transactions =  _repository<Transaction>().GetAllWithInclude(t =>
                 t.UserId == userId &&
                 t.CreationDate >= startDate &&
-                t.CreationDate < endDate
+                t.CreationDate < endDate, i => i.Include(tc => tc.TransactionCategory)
             );
 
             var pdf = GeneratePdf(transactions, month, year);
@@ -78,7 +80,8 @@ namespace Application.Services
 )
         {
             var culture = new CultureInfo("pt-BR");
-            var total = transactions.Sum(t => t.Value);
+            var totalSaidas = transactions.Where(t => t.Type == ETransactionType.Saida).Sum(t => t.Value);
+            var totalEntradas = transactions.Where(t => t.Type == ETransactionType.Entrada).Sum(t => t.Value);
 
             return Document.Create(container =>
             {
@@ -103,22 +106,25 @@ namespace Application.Services
                         header.Item().PaddingVertical(10).LineHorizontal(1);
                     });
 
-                    // ================= CONTENT (APENAS 1) =================
+                    // ================= CONTENT =================
                     page.Content().Column(content =>
                     {
-                        // ===== TABELA =====
                         content.Item().Table(table =>
                         {
                             table.ColumnsDefinition(columns =>
                             {
-                                columns.RelativeColumn(2);
-                                columns.RelativeColumn(5);
-                                columns.RelativeColumn(3);
+                                columns.RelativeColumn(2); // Data
+                                columns.RelativeColumn(2); // Tipo
+                                columns.RelativeColumn(2); // Categoria
+                                columns.RelativeColumn(3); // Descrição
+                                columns.RelativeColumn(2); // Valor
                             });
 
                             table.Header(header =>
                             {
                                 header.Cell().Element(CellStyle).Text("Data").Bold();
+                                header.Cell().Element(CellStyle).Text("Tipo").Bold();
+                                header.Cell().Element(CellStyle).Text("Categoria").Bold();
                                 header.Cell().Element(CellStyle).Text("Descrição").Bold();
                                 header.Cell().Element(CellStyle).AlignRight().Text("Valor").Bold();
                             });
@@ -127,6 +133,12 @@ namespace Application.Services
                             {
                                 table.Cell().Element(CellStyle)
                                     .Text(t.CreationDate?.ToString("dd/MM/yyyy") ?? "-");
+
+                                table.Cell().Element(CellStyle)
+                                    .Text(t.Type.ToString());
+
+                                table.Cell().Element(CellStyle)
+                                    .Text(t.TransactionCategory?.Name ?? "-");
 
                                 table.Cell().Element(CellStyle)
                                     .Text(t.Description ?? "-");
@@ -140,8 +152,14 @@ namespace Application.Services
                         // ===== TOTAL =====
                         content.Item().PaddingTop(15).AlignRight().Text(text =>
                         {
-                            text.Span("Total: ").Bold();
-                            text.Span(total.ToString("C", culture));
+                            text.Span("Total Saídas: ").Bold();
+                            text.Span(totalSaidas.ToString("C", culture));
+                        });
+
+                        content.Item().PaddingTop(15).AlignRight().Text(text =>
+                        {
+                            text.Span("Total Entradas: ").Bold();
+                            text.Span(totalEntradas.ToString("C", culture));
                         });
                     });
 
