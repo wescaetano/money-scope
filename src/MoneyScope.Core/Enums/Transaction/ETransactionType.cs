@@ -8,7 +8,7 @@ namespace MoneyScope.Core.Enums.Transaction
 {
     public enum ETransactionType
     {
-        Despesa = 1,
-        Receita = 2
+        Saida = 1,
+        Entrada = 2
     }
 }
