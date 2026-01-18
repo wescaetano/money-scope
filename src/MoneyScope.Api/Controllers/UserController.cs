@@ -61,7 +61,7 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [APIAuthorization(new string[] { "Users-V" })]
+        //[APIAuthorization(new string[] { "Users-V" })]
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] long id) =>
              Result(await _userService.GetById(id));
@@ -72,7 +72,7 @@ namespace MoneyScope.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [APIAuthorization(new string[] { "Users-V" })]
+        //[APIAuthorization(new string[] { "Users-V" })]
         [HttpGet("GetPaginated")]
         public async Task<IActionResult> GetPaginated([FromQuery] UserFilterModel model) =>
              Result(await _userService.GetPaginated(model));
