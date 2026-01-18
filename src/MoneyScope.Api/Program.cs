@@ -1,12 +1,15 @@
+using Application.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyScope.Api.Extensions;
 using MoneyScope.Api.Middlewares;
 using MoneyScope.Application.Config;
+using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.SendEmail;
 using MoneyScope.Core.Token;
 using MoneyScope.Infra.Context;
+using MoneyScope.Infra.Interfaces;
 using MoneyScope.Ioc;
 using System.Text.Json.Serialization;
 
@@ -29,6 +32,25 @@ builder.Services.AddDbContext<MoneyScopeContext>(options =>
             category == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information)));
 }, ServiceLifetime.Transient);
 
+
+var logoPath = Path.Combine(
+    builder.Environment.ContentRootPath,
+    "wwwroot",
+    "Assets",
+    "moneyscope-logo.png"
+);
+
+builder.Services.AddScoped<IReportPdfService>(sp =>
+{
+    var repositoryFactory = sp.GetRequiredService<IRepositoryFactory>();
+    var emailService = sp.GetRequiredService<ISendEmailService>();
+
+    return new ReportPdfService(
+        repositoryFactory,
+        emailService,
+        logoPath
+    );
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthenticationConfiguration(config);

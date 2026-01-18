@@ -3,6 +3,7 @@ using MoneyScope.Api.Authorization;
 using MoneyScope.Application.Filters.User;
 using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.User;
+using MoneyScope.Application.Services;
 
 namespace MoneyScope.Api.Controllers
 {
