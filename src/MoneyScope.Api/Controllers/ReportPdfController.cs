@@ -21,7 +21,14 @@ namespace MoneyScope.Api.Controllers
         {
             _reportPdfService = reportPdfService;
         }
-       
+
+        /// <summary>
+        /// Faz o download do relatório mensal.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="month"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         [HttpGet("relatorio-mensal")]
         [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GenerateMonthlyReport(
@@ -46,6 +53,13 @@ namespace MoneyScope.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Envia um relatório mensal por email.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="month"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         [HttpPost("enviar-relatorio-mensal")]
         [ProducesResponseType(typeof(ResponseModel<dynamic>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GenerateAndSendMonthlyReport(
@@ -71,13 +85,13 @@ namespace MoneyScope.Api.Controllers
             }
         }
 
-        /// <summary>
-        /// Adiciona um usuario.
-        /// </summary>
-        /// <returns></returns>
-        //[APIAuthorization(new string[] { "Users-C" })]
-        [HttpPost("BackgroundTest")]
-        public async Task<IActionResult> Add() =>
-             Result(await _reportPdfService.SendMonthlyReportsToAllUsersAsync());
+        ///// <summary>
+        ///// Rota para teste de envios de relatórios de meses anteriores.
+        ///// </summary>
+        ///// <returns></returns>
+        ////[APIAuthorization(new string[] { "Users-C" })]
+        //[HttpPost("BackgroundTest")]
+        //public async Task<IActionResult> Add() =>
+        //     Result(await _reportPdfService.SendMonthlyReportsToAllUsersAsync());
     }
 }
