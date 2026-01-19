@@ -106,6 +106,7 @@ namespace Application.Services
             var culture = new CultureInfo("pt-BR");
             var totalSaidas = transactions.Where(t => t.Type == ETransactionType.Saida).Sum(t => t.Value);
             var totalEntradas = transactions.Where(t => t.Type == ETransactionType.Entrada).Sum(t => t.Value);
+            var saldo = totalEntradas - totalSaidas;
 
             return Document.Create(container =>
             {
@@ -221,6 +222,12 @@ namespace Application.Services
                         {
                             text.Span("Total Entradas: ").Bold();
                             text.Span(totalEntradas.ToString("C", culture));
+                        });
+
+                        content.Item().PaddingTop(15).AlignRight().Text(text =>
+                        {
+                            text.Span("Saldo: ").Bold();
+                            text.Span(saldo.ToString("C", culture));
                         });
                     });
 
