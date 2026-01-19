@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using MoneyScope.Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,20 +36,13 @@ namespace MoneyScope.Application.Services
 
             using (var scope = _serviceProvider.CreateScope())
             {
-                //var _recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
-                //_recurringJobManager.AddOrUpdate<IKanbanService>(
-                //    "busca-kanbans-protheus",
-                //    service => service.BuscaKanbansProtheus(),
-                //    Cron.Daily(3),
-                //    options
-                //);
-
-                //_recurringJobManager.AddOrUpdate<IUsuarioService>(
-                //    "busca-usuarios-protheus",
-                //    service => service.BuscaUsuariosProtheus(),
-                //    Cron.Daily(3, 20),
-                //    options
-                //);
+                var _recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+                _recurringJobManager.AddOrUpdate<IReportPdfService>(
+                    "busca-kanbans-protheus",
+                    service => service.SendMonthlyReportsToAllUsersAsync(),
+                    "0 8 1 * *",
+                    options
+                );
             }
             return Task.CompletedTask;
         }

@@ -3,6 +3,7 @@ using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.Report;
 using MoneyScope.Application.Services;
 using MoneyScope.Core.Enums.Transaction;
+using MoneyScope.Core.Enums.User;
 using MoneyScope.Core.Models;
 using MoneyScope.Domain;
 using MoneyScope.Infra.Interfaces;
@@ -28,22 +29,22 @@ namespace Application.Services
             _logoPath = logoPath;
         }
 
-        public async Task<ResponseModel<dynamic>> GenerateMonthlyReportAsync(
-            long userId,
-            int month,
-            int year
-        )
+        public async Task<byte[]> GenerateAndSendMonthlyReportAsync(
+    long userId,
+    int month,
+    int year
+)
         {
             QuestPDF.Settings.License = LicenseType.Community;
 
             var user = await _repository<User>().Get(u => u.Id == userId);
             if (user == null)
-                return FactoryResponse<dynamic>.NotFound("Usuário não encontrado!");
+                throw new Exception("Usuário não encontrado!");
 
             var startDate = new DateTime(year, month, 1);
             var endDate = startDate.AddMonths(1);
 
-            var transactions =  _repository<Transaction>().GetAllWithInclude(t =>
+            var transactions = _repository<Transaction>().GetAllWithInclude(t =>
                 t.UserId == userId &&
                 t.CreationDate >= startDate &&
                 t.CreationDate < endDate, i => i.Include(tc => tc.TransactionCategory)
@@ -59,142 +60,41 @@ namespace Application.Services
                 $"— MoneyScope",
                 new List<EmailAttachment>
                 {
-                    new()
-                    {
-                        FileName = $"relatorio-{month}-{year}.pdf",
-                        Content = pdf,
-                        ContentType = "application/pdf"
-                    }
+            new()
+            {
+                FileName = $"relatorio-{month}-{year}.pdf",
+                Content = pdf,
+                ContentType = "application/pdf"
+            }
                 }
             );
 
-            return FactoryResponse<dynamic>.Success(
-                "Relatório enviado para o seu e-mail com sucesso!"
-            );
+            return pdf;
         }
 
-        // =========================================================
-        // PDF COM QUESTPDF
-        // =========================================================
+        public async Task<byte[]> GenerateMonthlyReportAsync(
+            long userId,
+            int month,
+            int year
+        )
+        {
+            QuestPDF.Settings.License = LicenseType.Community;
 
-        //private byte[] GeneratePdf
-        //(
-        //    IEnumerable<Transaction> transactions,
-        //    int month,
-        //    int year
-        //)
-        //{
-        //    var culture = new CultureInfo("pt-BR");
-        //    var totalSaidas = transactions.Where(t => t.Type == ETransactionType.Saida).Sum(t => t.Value);
-        //    var totalEntradas = transactions.Where(t => t.Type == ETransactionType.Entrada).Sum(t => t.Value);
+            var user = await _repository<User>().Get(u => u.Id == userId);
+            if (user == null)
+                throw new Exception("Usuário não encontrado!");
 
-        //    return Document.Create(container =>
-        //    {
-        //        container.Page(page =>
-        //        {
-        //            page.Size(PageSizes.A4);
-        //            page.Margin(30);
-        //            page.DefaultTextStyle(x => x.FontSize(11));
-        //            page.Background().Element(bg =>
-        //            {
-        //                bg.Background(Colors.Green.Lighten5.WithAlpha(0.30f));
-        //            });
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
 
-        //            // ================= HEADER =================
-        //            page.Header().Column(header =>
-        //            {
-        //                header.Item().Row(row =>
-        //                {
-        //                    row.ConstantItem(60)
-        //                    .Height(40)
-        //                    .Image(_logoPath)
-        //                    .FitArea();
+            var transactions = _repository<Transaction>().GetAllWithInclude(t =>
+                t.UserId == userId &&
+                t.CreationDate >= startDate &&
+                t.CreationDate < endDate, i => i.Include(tc => tc.TransactionCategory)
+            );
 
-        //                    row.RelativeItem().AlignMiddle().Column(col =>
-        //                    {
-        //                        col.Item()
-        //                            .Text("Relatório Financeiro Mensal")
-        //                            .FontSize(18)
-        //                            .Bold();
-
-        //                        col.Item()
-        //                            .Text($"{culture.DateTimeFormat.GetMonthName(month)} / {year}")
-        //                            .FontSize(12)
-        //                            .FontColor(Colors.Grey.Darken1);
-        //                    });
-        //                });
-
-        //                header.Item()
-        //                    .PaddingTop(10)
-        //                    .LineHorizontal(1);
-        //            });
-
-
-        //            // ================= CONTENT =================
-        //            page.Content().Column(content =>
-        //            {
-        //                content.Item().Table(table =>
-        //                {
-        //                    table.ColumnsDefinition(columns =>
-        //                    {
-        //                        columns.RelativeColumn(2); // Data
-        //                        columns.RelativeColumn(2); // Tipo
-        //                        columns.RelativeColumn(2); // Categoria
-        //                        columns.RelativeColumn(3); // Descrição
-        //                        columns.RelativeColumn(2); // Valor
-        //                    });
-
-        //                    table.Header(header =>
-        //                    {
-        //                        header.Cell().Element(CellStyle).Text("Data").Bold();
-        //                        header.Cell().Element(CellStyle).Text("Tipo").Bold();
-        //                        header.Cell().Element(CellStyle).Text("Categoria").Bold();
-        //                        header.Cell().Element(CellStyle).Text("Descrição").Bold();
-        //                        header.Cell().Element(CellStyle).AlignRight().Text("Valor").Bold();
-        //                    });
-
-        //                    foreach (var t in transactions)
-        //                    {
-        //                        table.Cell().Element(CellStyle)
-        //                            .Text(t.CreationDate?.ToString("dd/MM/yyyy") ?? "-");
-
-        //                        table.Cell().Element(CellStyle)
-        //                            .Text(t.Type.ToString());
-
-        //                        table.Cell().Element(CellStyle)
-        //                            .Text(t.TransactionCategory?.Name ?? "-");
-
-        //                        table.Cell().Element(CellStyle)
-        //                            .Text(t.Description ?? "-");
-
-        //                        table.Cell().Element(CellStyle)
-        //                            .AlignRight()
-        //                            .Text(t.Value.ToString("C", culture));
-        //                    }
-        //                });
-
-        //                // ===== TOTAL =====
-        //                content.Item().PaddingTop(15).AlignRight().Text(text =>
-        //                {
-        //                    text.Span("Total Saídas: ").Bold();
-        //                    text.Span(totalSaidas.ToString("C", culture));
-        //                });
-
-        //                content.Item().PaddingTop(15).AlignRight().Text(text =>
-        //                {
-        //                    text.Span("Total Entradas: ").Bold();
-        //                    text.Span(totalEntradas.ToString("C", culture));
-        //                });
-        //            });
-
-        //            // ================= FOOTER =================
-        //            page.Footer().AlignCenter()
-        //                .Text($"Gerado em {DateTime.Now:dd/MM/yyyy HH:mm}")
-        //                .FontSize(9)
-        //                .FontColor(Colors.Grey.Medium);
-        //        });
-        //    }).GeneratePdf();
-        //}
+            return GeneratePdf(transactions, month, year);
+        }
 
         private byte[] GeneratePdf
         (
@@ -333,6 +233,99 @@ namespace Application.Services
             }).GeneratePdf();
         }
 
+        public async Task<ResponseModel<dynamic>> SendMonthlyReportsToAllUsersAsync()
+        {
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            var now = DateTime.Now;
+            var previousMonth = now.AddMonths(-1);
+            var month = previousMonth.Month;
+            var year = previousMonth.Year;
+
+            // Buscar todos os usuários ativos
+            var users =  await _repository<User>()
+                .GetAll(u => u.Status == EUserStatus.Ativo); // Ajuste conforme sua regra de usuários ativos
+
+            if (!users.Any())
+                return FactoryResponse<dynamic>.NotFound("Nenhum usuário encontrado!");
+
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
+
+            int successCount = 0;
+            int errorCount = 0;
+            var errors = new List<string>();
+
+            foreach (var user in users)
+            {
+                try
+                {
+                    // Buscar transações do usuário no mês anterior
+                    var transactions = _repository<Transaction>().GetAllWithInclude(t =>
+                        t.UserId == user.Id &&
+                        t.CreationDate >= startDate &&
+                        t.CreationDate < endDate,
+                        i => i.Include(tc => tc.TransactionCategory)
+                    ).ToList();
+
+                    // Só envia se houver transações
+                    if (!transactions.Any())
+                    {
+                        Console.WriteLine($"Usuário {user.Name} ({user.Email}) não possui transações no período.");
+                        continue;
+                    }
+
+                    // Gerar PDF
+                    var pdf = GeneratePdf(transactions, month, year);
+
+                    // Enviar e-mail
+                    await _sendEmailService.SendGenericEmail(
+                        user.Email,
+                        $"📊 Seu relatório financeiro - {month:00}/{year}",
+                        $"Olá, {user.Name}!<br><br>",
+                        $"Segue em anexo o seu relatório financeiro do mês de {new CultureInfo("pt-BR").DateTimeFormat.GetMonthName(month)}/{year}.<br><br>",
+                        $"— MoneyScope",
+                        new List<EmailAttachment>
+                        {
+                    new()
+                    {
+                        FileName = $"relatorio-{month:00}-{year}.pdf",
+                        Content = pdf,
+                        ContentType = "application/pdf"
+                    }
+                        }
+                    );
+
+                    successCount++;
+                    Console.WriteLine($"✅ Relatório enviado para {user.Name} ({user.Email})");
+                }
+                catch (Exception ex)
+                {
+                    errorCount++;
+                    var errorMsg = $"Erro ao enviar relatório para {user.Name} ({user.Email}): {ex.Message}";
+                    errors.Add(errorMsg);
+                    Console.WriteLine($"❌ {errorMsg}");
+                }
+            }
+
+            var message = $"Relatórios processados: {successCount} enviados, {errorCount} erros.";
+
+            if (errors.Any())
+            {
+                return FactoryResponse<dynamic>.Success(new
+                {
+                    successCount,
+                    errorCount,
+                    errors
+                }, message);
+            }
+
+            return FactoryResponse<dynamic>.Success(new
+            {
+                successCount,
+                errorCount
+            }, message);
+        }
 
         private static IContainer CellStyle(IContainer container)
         {

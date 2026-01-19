@@ -9,7 +9,8 @@ namespace MoneyScope.Application.Interfaces
 {  
     public interface IReportPdfService
     {
-        Task<ResponseModel<dynamic>> GenerateMonthlyReportAsync(long userId, int month, int year
-        );
+        Task<byte[]> GenerateAndSendMonthlyReportAsync(long userId, int month, int year);
+        Task<byte[]> GenerateMonthlyReportAsync(long userId, int month, int year);
+        Task<ResponseModel<dynamic>> SendMonthlyReportsToAllUsersAsync();
     } 
 }
