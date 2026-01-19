@@ -1,4 +1,7 @@
 using Application.Services;
+using Hangfire;
+using Hangfire.Console;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +10,7 @@ using MoneyScope.Api.Middlewares;
 using MoneyScope.Application.Config;
 using MoneyScope.Application.Interfaces;
 using MoneyScope.Application.Models.SendEmail;
+using MoneyScope.Application.Services;
 using MoneyScope.Core.Token;
 using MoneyScope.Infra.Context;
 using MoneyScope.Infra.Interfaces;
@@ -57,6 +61,14 @@ builder.Services.AddAuthenticationConfiguration(config);
 builder.Services.AddAuthorizationConfiguration();
 builder.Services.AddSwaggerConfiguration();
 
+builder.Services.AddHangfire(options =>
+{
+    options.UseMemoryStorage();
+    options.UseConsole();
+});
+builder.Services.AddHangfireServer();
+builder.Services.AddHostedService<ServiceBackGround>();
+
 builder.Services.Configure<SmtpConfig>(options =>
 {
     builder.Configuration.GetSection(nameof(SmtpConfig)).Bind(options);
@@ -93,6 +105,11 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "MoneyScope v1");
     c.InjectStylesheet("/swagger-ui/swagger-dark.css");
+});
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = HangFireDashboard.AuthAuthorizationFilters()
 });
 
 
