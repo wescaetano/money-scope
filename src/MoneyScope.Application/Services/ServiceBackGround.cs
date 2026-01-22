@@ -37,10 +37,19 @@ namespace MoneyScope.Application.Services
             using (var scope = _serviceProvider.CreateScope())
             {
                 var _recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+                
                 _recurringJobManager.AddOrUpdate<IReportPdfService>(
-                    "busca-kanbans-protheus",
+                    "envia-relatorios-mensais",
                     service => service.SendMonthlyReportsToAllUsersAsync(),
                     "0 8 1 * *",
+                    options
+                );
+
+               
+                _recurringJobManager.AddOrUpdate<ITokenService>(
+                    "exclui-refresh-tokens-expirados",
+                    service => service.ExcludeExpiredRefreshTokens(),
+                    Cron.Hourly(),
                     options
                 );
             }
