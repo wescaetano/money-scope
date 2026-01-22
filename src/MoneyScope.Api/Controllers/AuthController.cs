@@ -75,5 +75,15 @@ namespace MoneyScope.Api.Controllers
 
             return Result(response);
         }
+
+        ///// <summary>
+        ///// exclude expired refresh tokens.
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpDelete("Exclude")]
+        //public async Task<IActionResult> ExcludeRefreshTokens() =>
+        //    Result(await _tokenService.ExcludeExpiredRefreshTokens());
+
+
     }
 }

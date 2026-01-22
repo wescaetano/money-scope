@@ -58,7 +58,7 @@ namespace MoneyScope.Application.Services
             var refreshToken = new RefreshToken
             {
                 Token = Guid.NewGuid().ToString(),
-                ExpiresAt = DateTime.Now.AddMinutes(refreshTokenValidityMins),
+                ExpiresAt = DateTime.UtcNow.AddMinutes(refreshTokenValidityMins),
                 UserId = userId
             };
 
@@ -101,9 +101,9 @@ namespace MoneyScope.Application.Services
         {
             var claims = new List<Claim>();
 
-            foreach (var f in model.Modules)
+            foreach (var m in model.Modules)
             {
-                claims.Add(new Claim("functionality", f.Trim()));
+                claims.Add(new Claim("functionality", m.Trim()));
             }
 
             var uniqueName = "";
@@ -119,12 +119,7 @@ namespace MoneyScope.Application.Services
 
             DateTime dtCreation = DateTime.UtcNow;
             DateTime dtExpiration;
-            if (model.Seconds != null && model.Seconds > 0)
-            {
-                dtExpiration = dtCreation +
-                TimeSpan.FromSeconds(model.Seconds.Value);
-            }
-            else if (_tokenConfig.TokenValidityMins != 0)
+            if (_tokenConfig.TokenValidityMins != 0)
             {
                 dtExpiration = dtCreation +
                 TimeSpan.FromMinutes(_tokenConfig.TokenValidityMins);
@@ -289,6 +284,15 @@ namespace MoneyScope.Application.Services
             {
                 return false;
             }
+        }
+        public async Task<ResponseModel<dynamic>> ExcludeExpiredRefreshTokens()
+        {
+            var refreshTokens = await _repository<RefreshToken>().GetAll(t => t.ExpiresAt < DateTime.UtcNow);
+            foreach (var token in refreshTokens)
+            {
+                await _repository<RefreshToken>().Remove(token);
+            }
+            return FactoryResponse<dynamic>.Success("RefreshTokens expirados removidos com sucesso!");
         }
     }
 }

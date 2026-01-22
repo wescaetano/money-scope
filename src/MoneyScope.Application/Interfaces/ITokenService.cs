@@ -14,6 +14,7 @@ namespace MoneyScope.Application.Interfaces
         Task<ResponseModel<dynamic>?> ValidateRefreshToken(string token);
         Task<string> GenerateRefreshToken(long userId);
         Task<ResponseModel<dynamic>> GenerateToken(GenerateTokenModel model);
+        Task<ResponseModel<dynamic>> ExcludeExpiredRefreshTokens();
         Task<ResponseModel<dynamic>> GetToken(User user, int? seconds = null);
         Task<ResponseModel<dynamic>> GenerateTokenByEmail(string email);
         bool IsValidToken(string token);
