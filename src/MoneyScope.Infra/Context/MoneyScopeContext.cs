@@ -19,6 +19,7 @@ namespace MoneyScope.Infra.Context
         public DbSet<TransactionCategory> TransactionCategories { get; set; } = null!;
         public DbSet<Transaction> Transaction { get; set; } = null!;
         public DbSet<Goal> Goal { get; set; } = null!;
+        public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

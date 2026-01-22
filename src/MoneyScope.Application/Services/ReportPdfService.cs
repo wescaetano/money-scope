@@ -16,16 +16,16 @@ namespace Application.Services
 {
     public class ReportPdfService : BaseService, IReportPdfService
     {
-        private readonly ISendEmailService _sendEmailService;
+        private readonly IAuthService _authService;
         private readonly string _logoPath;
 
         public ReportPdfService(
             IRepositoryFactory repositoryFactory,
-            ISendEmailService sendEmailService,
+            IAuthService authService,
             string logoPath
         ) : base(repositoryFactory)
         {
-            _sendEmailService = sendEmailService;
+            _authService = authService;
             _logoPath = logoPath;
         }
 
@@ -52,7 +52,7 @@ namespace Application.Services
 
             var pdf = GeneratePdf(transactions, month, year);
 
-            await _sendEmailService.SendGenericEmail(
+            await _authService.SendGenericEmail(
                 user.Email,
                 $"📊 Seu relatório financeiro - {month}/{year}",
                 $"Olá, {user.Name},<br><br>",
@@ -286,7 +286,7 @@ namespace Application.Services
                     var pdf = GeneratePdf(transactions, month, year);
 
                     // Enviar e-mail
-                    await _sendEmailService.SendGenericEmail(
+                    await _authService.SendGenericEmail(
                         user.Email,
                         $"📊 Seu relatório financeiro - {month:00}/{year}",
                         $"Olá, {user.Name}!<br><br>",

@@ -8,8 +8,10 @@ namespace MoneyScope.Core.Token
 {
     public class TokenConfigurations
     {
+        public string Key { get; set; } = null!;
         public string Audience { get; set; } = null!;
         public string Issuer { get; set; } = null!;
-        public int Seconds { get; set; }
+        public int RefreshTokenValidityMins { get; set; }
+        public int TokenValidityMins { get; set; }
     }
 }

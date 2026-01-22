@@ -18,7 +18,5 @@ namespace MoneyScope.Application.Interfaces
         Task<ResponseModel<dynamic>> ChangeStatus(ChangeUserStatusModel model);
         Task<ResponseModel<PaginationData<dynamic>>> GetPaginated(UserFilterModel filter);
         Task<ResponseModel<dynamic>> GetById(long id);
-        Task<ResponseModel<dynamic>> AuthenticateUser(LoginModel model);
-        Task<ResponseModel<dynamic>> AuthenticateSocialUser(LoginModel model);
     }
 }
