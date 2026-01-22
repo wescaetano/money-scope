@@ -30,201 +30,201 @@ namespace MoneyScope.Application.Services
             _configSmtp = configSmtp.Value;
             _environment = environment;
         }
-        private string GetBodyResetPassword(string token, ERedefinitionEmailType type = ERedefinitionEmailType.RequestToResetPassword, string nome = "")
-        {
-            var path = Path.Combine(_environment.WebRootPath, $"MailTemplates/{"RedefinirSenha"}.html");
-            var body = File.ReadAllText(path);
+        //private string GetBodyResetPassword(string token, ERedefinitionEmailType type = ERedefinitionEmailType.RequestToResetPassword, string nome = "")
+        //{
+        //    var path = Path.Combine(_environment.WebRootPath, $"MailTemplates/{"RedefinirSenha"}.html");
+        //    var body = File.ReadAllText(path);
 
-            string titulo = "";
-            string texto1 = "";
-            string texto2 = "";
+        //    string titulo = "";
+        //    string texto1 = "";
+        //    string texto2 = "";
 
-            switch (type)
-            {
-                case ERedefinitionEmailType.RequestToResetPassword:
-                    titulo = "Solicitação de Redefinição de Senha";
-                    texto1 = $"Olá, {nome}!<br><br> Recebemos uma solicitação para redefinir sua senha de acesso ao MoneyScope.<br>Para continuar, clique no botão abaixo:";
-                    texto2 = "Se você não fez essa solicitação, apenas ignore este e-mail. Sua conta permanecerá segura.";
-                    break;
-                case ERedefinitionEmailType.Unsubscribe:
-                    titulo = "Cancelamento de inscricão";
-                    texto1 = $"Olá, {nome}!<br><br> Sua inscrição foi cancelada com sucesso.";
-                    texto2 = "Se você não fez essa solicitação, apenas ignore este e-mail. Sua conta permanecerá segura.";
-                    break;
-                default:
-                    break;
-            }
+        //    switch (type)
+        //    {
+        //        case ERedefinitionEmailType.RequestToResetPassword:
+        //            titulo = "Solicitação de Redefinição de Senha";
+        //            texto1 = $"Olá, {nome}!<br><br> Recebemos uma solicitação para redefinir sua senha de acesso ao MoneyScope.<br>Para continuar, clique no botão abaixo:";
+        //            texto2 = "Se você não fez essa solicitação, apenas ignore este e-mail. Sua conta permanecerá segura.";
+        //            break;
+        //        case ERedefinitionEmailType.Unsubscribe:
+        //            titulo = "Cancelamento de inscricão";
+        //            texto1 = $"Olá, {nome}!<br><br> Sua inscrição foi cancelada com sucesso.";
+        //            texto2 = "Se você não fez essa solicitação, apenas ignore este e-mail. Sua conta permanecerá segura.";
+        //            break;
+        //        default:
+        //            break;
+        //    }
 
-            var variables = new Dictionary<string, string>
-            {
-                { "#URLLOGO", _configSmtp.UrlLogo },
-                { "#TituloEmail", titulo },
-                { "#TEXTO1", texto1 },
-                { "#URLREDEFINIR", $"{_configSmtp.UrlRedefinicao}/{token}" },
-                { "#TEXTO2", texto2 }
-            };
+        //    var variables = new Dictionary<string, string>
+        //    {
+        //        { "#URLLOGO", _configSmtp.UrlLogo },
+        //        { "#TituloEmail", titulo },
+        //        { "#TEXTO1", texto1 },
+        //        { "#URLREDEFINIR", $"{_configSmtp.UrlRedefinicao}/{token}" },
+        //        { "#TEXTO2", texto2 }
+        //    };
 
-            foreach (var item in variables)
-                body = body.Replace(item.Key, item.Value);
+        //    foreach (var item in variables)
+        //        body = body.Replace(item.Key, item.Value);
 
-            return body;
-        }
-        public async Task<ResponseModel<dynamic>> ResetPassword(string token, string newPassword)
-        {
-            var isvalid = _tokenService.IsValidToken(token);
-            if (!isvalid) return FactoryResponse<dynamic>.Forbiden("Token invalido");
+        //    return body;
+        //}
+        //public async Task<ResponseModel<dynamic>> ResetPassword(string token, string newPassword)
+        //{
+        //    var isvalid = _tokenService.IsValidToken(token);
+        //    if (!isvalid) return FactoryResponse<dynamic>.Forbiden("Token invalido");
 
-            var login = _tokenService.Getclaim("unique_name", token);
-            if (login is null) return FactoryResponse<dynamic>.Forbiden("Token invalido");
+        //    var login = _tokenService.Getclaim("unique_name", token);
+        //    if (login is null) return FactoryResponse<dynamic>.Forbiden("Token invalido");
 
-            var user = await _repository<User>().Get(x => (x.Email.Replace(" ", "") == login.Replace(" ", "")));
-            if (user is null) return FactoryResponse<dynamic>.NotFound("Usuário não encontrado!");
+        //    var user = await _repository<User>().Get(x => (x.Email.Replace(" ", "") == login.Replace(" ", "")));
+        //    if (user is null) return FactoryResponse<dynamic>.NotFound("Usuário não encontrado!");
 
-            user.Status = EUserStatus.Ativo;
-            user.Password = HashHelper.HashGeneration(newPassword);
-            //       if (!usuario.IsValid) return FactoryResponse<dynamic>.InvalidModel(null, usuario.ValidationErrors);
+        //    user.Status = EUserStatus.Ativo;
+        //    user.Password = HashHelper.HashGeneration(newPassword);
+        //    //       if (!usuario.IsValid) return FactoryResponse<dynamic>.InvalidModel(null, usuario.ValidationErrors);
 
-            try
-            {
-                await _repository<User>().Update(user);
-            }
-            catch (Exception e)
-            {
-                return FactoryResponse<dynamic>.BadRequest($"erro interno: " + e.Message);
-            }
+        //    try
+        //    {
+        //        await _repository<User>().Update(user);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return FactoryResponse<dynamic>.BadRequest($"erro interno: " + e.Message);
+        //    }
 
-            //var retornoToken = await GetToken(usuario, null, 86400);
+        //    //var retornoToken = await GetToken(usuario, null, 86400);
 
-            return FactoryResponse<dynamic>.Success("Senha definida com sucesso!");
-        }
-        private string GetBodyGenericEmail(string titulo, string texto1, string texto2)
-        {
-            var path = Path.Combine(_environment.WebRootPath, $"MailTemplates/{"ConfirmarPagamento"}.html");
-            var body = File.ReadAllText(path);
+        //    return FactoryResponse<dynamic>.Success("Senha definida com sucesso!");
+        //}
+        //private string GetBodyGenericEmail(string titulo, string texto1, string texto2)
+        //{
+        //    var path = Path.Combine(_environment.WebRootPath, $"MailTemplates/{"ConfirmarPagamento"}.html");
+        //    var body = File.ReadAllText(path);
 
-            var variables = new Dictionary<string, string>
-            {
-                { "#URLLOGO", _configSmtp.UrlLogo },
-                { "#TituloEmail", titulo },
-                { "#TEXTO1", texto1 },
-                { "#TEXTO2", texto2 }
-            };
+        //    var variables = new Dictionary<string, string>
+        //    {
+        //        { "#URLLOGO", _configSmtp.UrlLogo },
+        //        { "#TituloEmail", titulo },
+        //        { "#TEXTO1", texto1 },
+        //        { "#TEXTO2", texto2 }
+        //    };
 
-            foreach (var item in variables)
-                body = body.Replace(item.Key, item.Value);
+        //    foreach (var item in variables)
+        //        body = body.Replace(item.Key, item.Value);
 
-            return body;
-        }
-        public async Task<bool> SendGenericEmail(string to, string subject, string titulo, string texto1, string texto2, List<EmailAttachment>? attachments = null)
-        {
-            var client = new SmtpClient
-            {
-                UseDefaultCredentials = _configSmtp.UseDefaultCredentials,
-                Host = _configSmtp.Host,
-                Port = _configSmtp.Port,
-                EnableSsl = _configSmtp.EnableSsl,
-                Credentials = new NetworkCredential(_configSmtp.EmailFrom, _configSmtp.Password)
-            };
+        //    return body;
+        //}
+        //public async Task<bool> SendGenericEmail(string to, string subject, string titulo, string texto1, string texto2, List<EmailAttachment>? attachments = null)
+        //{
+        //    var client = new SmtpClient
+        //    {
+        //        UseDefaultCredentials = _configSmtp.UseDefaultCredentials,
+        //        Host = _configSmtp.Host,
+        //        Port = _configSmtp.Port,
+        //        EnableSsl = _configSmtp.EnableSsl,
+        //        Credentials = new NetworkCredential(_configSmtp.EmailFrom, _configSmtp.Password)
+        //    };
 
-            if (client.EnableSsl && ServicePointManager.ServerCertificateValidationCallback == null)
-                ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;
+        //    if (client.EnableSsl && ServicePointManager.ServerCertificateValidationCallback == null)
+        //        ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;
 
-            var body = GetBodyGenericEmail(titulo, texto1, texto2);
+        //    var body = GetBodyGenericEmail(titulo, texto1, texto2);
 
-            MailMessage message = new()
-            {
-                From = new MailAddress(_configSmtp.EmailFrom, _configSmtp.NameFrom, Encoding.UTF8),
-                IsBodyHtml = true,
-                Body = body,
-                Priority = MailPriority.Normal,
-                Subject = subject,
-                BodyEncoding = Encoding.UTF8,
-                SubjectEncoding = Encoding.UTF8
-            };
+        //    MailMessage message = new()
+        //    {
+        //        From = new MailAddress(_configSmtp.EmailFrom, _configSmtp.NameFrom, Encoding.UTF8),
+        //        IsBodyHtml = true,
+        //        Body = body,
+        //        Priority = MailPriority.Normal,
+        //        Subject = subject,
+        //        BodyEncoding = Encoding.UTF8,
+        //        SubjectEncoding = Encoding.UTF8
+        //    };
 
-            message.To.Add(to);
+        //    message.To.Add(to);
 
-            if (attachments != null && attachments.Any())
-            {
-                foreach (var att in attachments)
-                {
-                    var stream = new MemoryStream(att.Content);
+        //    if (attachments != null && attachments.Any())
+        //    {
+        //        foreach (var att in attachments)
+        //        {
+        //            var stream = new MemoryStream(att.Content);
 
-                    var attachment = new Attachment(
-                        stream,
-                        att.FileName,
-                        att.ContentType
-                    );
+        //            var attachment = new Attachment(
+        //                stream,
+        //                att.FileName,
+        //                att.ContentType
+        //            );
 
-                    message.Attachments.Add(attachment);
-                }
-            }
+        //            message.Attachments.Add(attachment);
+        //        }
+        //    }
 
-            try
-            {
-                await Task.Run(() => client.Send(message));
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
-            }
-        }
-        public async Task<bool> SendEmail(SendEmailModel model, ERedefinitionEmailType type, string name)
-        {
-            try
-            {
-                using var client = new SmtpClient("smtp.gmail.com", 587)
-                {
-                    Credentials = new NetworkCredential(_configSmtp.EmailFrom, _configSmtp.Password),
-                    EnableSsl = true, // Gmail exige STARTTLS
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    UseDefaultCredentials = false
-                };
+        //    try
+        //    {
+        //        await Task.Run(() => client.Send(message));
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.ToString());
+        //        return false;
+        //    }
+        //}
+        //public async Task<bool> SendEmail(SendEmailModel model, ERedefinitionEmailType type, string name)
+        //{
+        //    try
+        //    {
+        //        using var client = new SmtpClient("smtp.gmail.com", 587)
+        //        {
+        //            Credentials = new NetworkCredential(_configSmtp.EmailFrom, _configSmtp.Password),
+        //            EnableSsl = true, // Gmail exige STARTTLS
+        //            DeliveryMethod = SmtpDeliveryMethod.Network,
+        //            UseDefaultCredentials = false
+        //        };
 
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        //        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                var body = GetBodyResetPassword(model.Content, type, name);
+        //        var body = GetBodyResetPassword(model.Content, type, name);
 
-                using var message = new MailMessage
-                {
-                    From = new MailAddress(_configSmtp.EmailFrom, _configSmtp.NameFrom, Encoding.UTF8),
-                    Subject = model.Subject,
-                    Body = body,
-                    IsBodyHtml = true,
-                    BodyEncoding = Encoding.UTF8,
-                    SubjectEncoding = Encoding.UTF8
-                };
+        //        using var message = new MailMessage
+        //        {
+        //            From = new MailAddress(_configSmtp.EmailFrom, _configSmtp.NameFrom, Encoding.UTF8),
+        //            Subject = model.Subject,
+        //            Body = body,
+        //            IsBodyHtml = true,
+        //            BodyEncoding = Encoding.UTF8,
+        //            SubjectEncoding = Encoding.UTF8
+        //        };
 
-                message.To.Add(model.To);
+        //        message.To.Add(model.To);
 
-                await client.SendMailAsync(message);
-                return true;
-            }
-            catch (SmtpException ex)
-            {
-                Console.WriteLine($"SMTP error: {ex.Message}");
-                Console.WriteLine($"Inner: {ex.InnerException?.Message}");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"General error: {ex.Message}");
-                Console.WriteLine($"Inner: {ex.InnerException?.Message}");
-                return false;
-            }
-        }
-        public async Task<ResponseModel<dynamic>> SendEmailResetPassword(string email, ERedefinitionEmailType type = ERedefinitionEmailType.RequestToResetPassword)
-        {
-            var usuario = await _repository<User>().Get(x => (x.Email != null && (x.Email.ToLower().Replace(" ", "") == email.ToLower().Replace(" ", ""))));
-            if (usuario is null) return FactoryResponse<dynamic>.NotFound("Usuario não encontrado!");
+        //        await client.SendMailAsync(message);
+        //        return true;
+        //    }
+        //    catch (SmtpException ex)
+        //    {
+        //        Console.WriteLine($"SMTP error: {ex.Message}");
+        //        Console.WriteLine($"Inner: {ex.InnerException?.Message}");
+        //        return false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"General error: {ex.Message}");
+        //        Console.WriteLine($"Inner: {ex.InnerException?.Message}");
+        //        return false;
+        //    }
+        //}
+        //public async Task<ResponseModel<dynamic>> SendEmailResetPassword(string email, ERedefinitionEmailType type = ERedefinitionEmailType.RequestToResetPassword)
+        //{
+        //    var usuario = await _repository<User>().Get(x => (x.Email != null && (x.Email.ToLower().Replace(" ", "") == email.ToLower().Replace(" ", ""))));
+        //    if (usuario is null) return FactoryResponse<dynamic>.NotFound("Usuario não encontrado!");
 
-            var tokenEmail = await _tokenService.GenerateTokenByEmail(email);
+        //    var tokenEmail = await _tokenService.GenerateTokenByEmail(email);
 
-            var sendEmail = await SendEmail(new SendEmailModel("Envio de senha", usuario.Email, tokenEmail.Data!), type, usuario.Name);
-            if (!sendEmail) return FactoryResponse<dynamic>.BadRequest("Erro ao Enviar Email!");
-            return FactoryResponse<dynamic>.Success("Email enviado com sucesso!");
-        }
+        //    var sendEmail = await SendEmail(new SendEmailModel("Envio de senha", usuario.Email, tokenEmail.Data!), type, usuario.Name);
+        //    if (!sendEmail) return FactoryResponse<dynamic>.BadRequest("Erro ao Enviar Email!");
+        //    return FactoryResponse<dynamic>.Success("Email enviado com sucesso!");
+        //}
     }
 }

@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Compile Remove="Interfaces\ISendEmailService.cs" />
+    <Compile Remove="Services\SendEmailService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.25.1" />
     <PackageReference Include="Hangfire.Core" Version="1.8.22" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.0" />

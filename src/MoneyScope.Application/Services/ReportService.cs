@@ -15,12 +15,12 @@ namespace MoneyScope.Application.Services
 {
     public class ReportService : BaseService, IReportService
     {
-        private readonly ISendEmailService _sendEmailService;
+        private readonly IAuthService _authService;
         private readonly ITransactionService _transactionService;
         private readonly ICsvExportService _csvExportService;
-        public ReportService(IRepositoryFactory repositoryFactory, ISendEmailService sendEmailService, ITransactionService transactionService, ICsvExportService csvExportService) : base(repositoryFactory)
+        public ReportService(IRepositoryFactory repositoryFactory, IAuthService authService, ITransactionService transactionService, ICsvExportService csvExportService) : base(repositoryFactory)
         {
-            _sendEmailService = sendEmailService;
+            _authService = authService;
             _transactionService = transactionService;
             _csvExportService = csvExportService;
         }
@@ -58,7 +58,7 @@ namespace MoneyScope.Application.Services
 
             var csv = await GenerateMonthlyCsvAsync(userId, month, year);
 
-            await _sendEmailService.SendGenericEmail(
+            await _authService.SendGenericEmail(
                 user.Email,
                 $"📊 Seu relatório financeiro - {month}/{year}",
                 $"Olá, {user.Name},<br><br>",
