@@ -19,7 +19,7 @@ namespace MoneyScope.Api.Extensions
             {
                 c.OrderActionsBy((apiDesc) =>
                     $"{apiDesc.ActionDescriptor.RouteValues["controller"]}_{apiDesc.RelativePath}");
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MoneyScope API", Version = "v1.1.1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MoneyGarden API", Version = "v1.1.1" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
