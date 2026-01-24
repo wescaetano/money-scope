@@ -57,7 +57,7 @@ namespace Application.Services
                 $"📊 Seu relatório financeiro - {month}/{year}",
                 $"Olá, {user.Name},<br><br>",
                 $"Segue em anexo o seu relatório financeiro mensal.<br><br>",
-                $"— MoneyScope",
+                $"— MoneyGarden",
                 new List<EmailAttachment>
                 {
             new()
@@ -138,7 +138,7 @@ namespace Application.Services
                             row.AutoItem()
                                 .PaddingLeft(10)
                                 .AlignMiddle()
-                                .Text("MoneyScope")
+                                .Text("MoneyGarden")
                                 .FontSize(24)
                                 .Bold()
                                 .FontColor(Colors.Black);
@@ -291,7 +291,7 @@ namespace Application.Services
                         $"📊 Seu relatório financeiro - {month:00}/{year}",
                         $"Olá, {user.Name}!<br><br>",
                         $"Segue em anexo o seu relatório financeiro do mês de {new CultureInfo("pt-BR").DateTimeFormat.GetMonthName(month)}/{year}.<br><br>",
-                        $"— MoneyScope",
+                        $"— MoneyGarden",
                         new List<EmailAttachment>
                         {
                     new()
