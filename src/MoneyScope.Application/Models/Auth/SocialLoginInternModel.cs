@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyScope.Application.Models.User
+namespace MoneyScope.Application.Models.Auth
 {
-    public class SocialLoginModel
+    public class SocialLoginInternModel
     {
-        public string Name { get; set; } = null!;
-        public string Email { get; set; } = null!;
+        public string Login { get; set; } = null!;
         public string ProviderId { get; set; } = null!;
     }
 }
