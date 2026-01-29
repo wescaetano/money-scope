@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MoneyScope.Application.Interfaces;
+using MoneyScope.Application.Models.Auth;
 using MoneyScope.Application.Models.Report;
 using MoneyScope.Application.Models.SendEmail;
 using MoneyScope.Application.Models.Token;
@@ -33,9 +34,76 @@ namespace MoneyScope.Application.Services
             _configSmtp = configSmtp.Value;
             _environment = environment;
         }
-        public async Task<ResponseModel<dynamic>> AuthenticateSocialUser(LoginModel model)
+
+        public async Task<ResponseModel<dynamic>> SocialLogin(SocialLoginModel model)
         {
-            throw new NotImplementedException();
+            var userExist = await _repository<User>().Get(x => x.Email.ToLower() == model.Email.ToLower());
+
+            if (userExist != null) // Verifica se o usuário já existe
+            {
+                var loginModel = new SocialLoginInternModel();
+                loginModel.Login = model.Email;
+                loginModel.ProviderId = model.ProviderId;
+
+                if (string.IsNullOrEmpty(userExist.ProviderId) || !HashHelper.PasswordCompare(userExist.ProviderId, model.ProviderId))
+                {
+
+                    userExist.ProviderId = HashHelper.HashGeneration(model.ProviderId);
+                    await _repository<User>().Update(userExist);
+                }
+
+                try
+                {
+                    return await AuthenticateSocialUser(loginModel);
+                }
+                catch (Exception ex)
+                {
+                    return FactoryResponse<dynamic>.BadRequestErroInterno(ex.Message);
+                }
+            }
+            else // Se o usuário não existir, cria um novo usuário
+            {
+                var user = new User()
+                {
+                    Name = model.Name,
+                    Email = model.Email,
+                    Status = EUserStatus.Ativo,
+                    Password = HashHelper.HashGeneration(model.ProviderId),
+                    ProviderId = HashHelper.HashGeneration(model.ProviderId),
+                    ProfilesUsers = new List<ProfileUser> { new ProfileUser { ProfileId = 2 } }
+                };
+                user.AddCreationDate();
+
+                try
+                {
+                    await _repository<User>().Create(user);
+
+                    // Cria o login model para autenticar o novo usuário
+                    var loginModel = new SocialLoginInternModel();
+                    loginModel.Login = user.Email;
+                    loginModel.ProviderId = model.ProviderId;
+
+                    return await AuthenticateSocialUser(loginModel);
+                }
+                catch (Exception ex)
+                {
+                    return FactoryResponse<dynamic>.BadRequestErroInterno(ex.Message);
+                }
+            }
+        }
+        private async Task<ResponseModel<dynamic>> AuthenticateSocialUser(SocialLoginInternModel model)
+        {
+            var user = _repository<User>().GetAllWithInclude(x => x.Email != null && x.Email == model.Login, setIncludes: query => query.Include(u => u.ProfilesUsers).ThenInclude(up => up.Profile)).FirstOrDefault();
+
+            if (user == null) return FactoryResponse<dynamic>.BadRequest("Email Incorreto");
+
+            if (user.Status == EUserStatus.Inativo) return FactoryResponse<dynamic>.BadRequest("Acesso bloqueado por inativação da conta.");
+
+            if (!HashHelper.PasswordCompare(user.ProviderId!, model.ProviderId)) return FactoryResponse<dynamic>.BadRequest("Senha Incorreta");
+
+            ResponseModel<dynamic> retorno = await _tokenService.GetToken(user);
+
+            return retorno;
         }
         public async Task<ResponseModel<dynamic>> AuthenticateUser(LoginModel model)
         {

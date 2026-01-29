@@ -36,6 +36,15 @@ namespace MoneyScope.Api.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model) =>
              Result(await _authService.AuthenticateUser(model));
 
+        /// <summary>
+        ///  Faz o Login social do usuário.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("SocialLogin")]
+        public async Task<IActionResult> SocialLogin([FromBody] SocialLoginModel model) =>
+             Result(await _authService.SocialLogin(model));
+
 
         /// <summary>
         /// Envia um email de recuperação de senha.

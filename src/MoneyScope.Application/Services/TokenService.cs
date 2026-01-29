@@ -167,13 +167,13 @@ namespace MoneyScope.Application.Services
 
             var modules = accessProfiles.SelectMany(x => x.Profile.ProfilesModules).ToList();
             var permissionsModules = GetUserModules(modules);
-            var functionalitiesAssembledModel = GetModulesModelUserAssembled(modules);
+            var modulesAssembledModel = GetModulesModelUserAssembled(modules);
             if (!permissionsModules.Any()) return FactoryResponse<dynamic>.Unauthorized("Nenhum Perfil Atribuido ao usuario");
 
             var tokenModel = new Models.Token.GenerateTokenModel
             {
                 Modules = permissionsModules,
-                ModulesAssembled = functionalitiesAssembledModel,
+                ModulesAssembled = modulesAssembledModel,
                 UserEmail = user.Email,
                 UserProfileImage = user.ImageUrl,
                 UserId = user.Id,
