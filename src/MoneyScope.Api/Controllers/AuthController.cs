@@ -68,7 +68,7 @@ namespace MoneyScope.Api.Controllers
             Result(await _authService.ResetPassword(model.Token, model.NewPassword));
 
         /// <summary>
-        /// Refresh access token and refreshToken.
+        /// Renova accessToken e refreshToken.
         /// </summary>
         /// <param name="request"> </param>
         /// <returns></returns>
