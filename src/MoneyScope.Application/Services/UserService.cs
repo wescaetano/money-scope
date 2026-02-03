@@ -50,6 +50,8 @@ namespace MoneyScope.Application.Services
                 user.ImageUrl = imageUrl;
             }
 
+            var perfilExiste = await _repository<Profile>().Get(p => p.Id == model.AccessProfile);
+            if (perfilExiste == null) return FactoryResponse<dynamic>.NotFound("Perfil de acesso não encontrado.");
             user.ProfilesUsers.Add(new Domain.AccessProfile.ProfileUser { ProfileId = model.AccessProfile });
 
             try
@@ -66,15 +68,25 @@ namespace MoneyScope.Application.Services
         }
         public async Task<ResponseModel<dynamic>> Update(UpdateUserModel model)
         {
-            var user = await _repository<User>().Get(model.Id);
+            var user = await _repository<User>().GetWithInclude(x => x.Id == model.Id, i => i.Include(pu => pu.ProfilesUsers).ThenInclude(p => p.Profile));
             if (user == null) return FactoryResponse<dynamic>.NotFound("Usuário não encontrado!");
 
-            if(model.AccessProfile != null) 
+            if (model.AccessProfile != null)
             {
-                user.ProfilesUsers.Clear();
-                user.ProfilesUsers.Add(new Domain.AccessProfile.ProfileUser { ProfileId = model.AccessProfile.Value });
+                var perfilExiste = await _repository<Profile>().Get(p => p.Id == model.AccessProfile);
+                if (perfilExiste == null) return FactoryResponse<dynamic>.NotFound("Perfil de acesso não encontrado.");
+
+                var profilesToRemove = user.ProfilesUsers.ToList();
+
+                foreach (var profile in profilesToRemove)
+                {
+                    await _relationRepository<ProfileUser>().Remove(profile);
+                }
+
+                user.ProfilesUsers.Add(new ProfileUser { ProfileId = model.AccessProfile.Value });
             }
-            if(model.Name != null) user.Name = model.Name;
+
+            if (model.Name != null) user.Name = model.Name;
             if(model.Email != null) user.Email = model.Email;
 
             // Save the image to blob
