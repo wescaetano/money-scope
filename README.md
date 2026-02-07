@@ -1,7 +1,7 @@
 
-# MoneyScope
+# MoneyGarden 
 
-MoneyScope is an intelligent personal finance management API designed to help users manage their finances in a practical and organized way.
+MoneyGarden is an intelligent personal finance management API designed to help users manage their finances in a practical and organized way.
 With it, users can record transactions, set financial goals, create custom categories, and generate financial performance reports.
 
 ## Objective
@@ -18,6 +18,7 @@ With it, users can record transactions, set financial goals, create custom categ
 - 🗂️ Create and manage custom categories
 - 📈 Generate financial performance reports
 - 🔐 User authentication and authorization
+- 📩 Send financial reports by email
 
 ## Technologies Used
 
@@ -28,3 +29,4 @@ With it, users can record transactions, set financial goals, create custom categ
 - Clean Architecture
 - JWT Authentication
 - FluentValidation
+- SMTP for sending emails
