@@ -9,7 +9,7 @@ With it, users can record transactions, set financial goals, create custom categ
 - The main focus of the project is:
 - Modular organization for easy maintenance and scalability.
 - Secure authentication and access control.
-- Best architecture practices, applying Clean Architecture and a simplified DDD.
+- Best architecture practices, applying Clean Architecture
 
 ## Features
 
