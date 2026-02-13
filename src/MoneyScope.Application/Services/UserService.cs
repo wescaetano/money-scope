@@ -156,16 +156,6 @@ namespace MoneyScope.Application.Services
 
             var filteredUsers = await usersQuery.ToListAsync();
             var total = filteredUsers.Count();
-            //var prop = typeof(User).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.SortField.ToLower());
-
-            //if (filter.SortOrder.ToLower() != "desc")
-            //{
-            //    filteredUsers = filteredUsers.OrderBy(x => prop == null ? "Id" : prop.GetValue(x, null)).ToList();
-            //}
-            //else
-            //{
-            //    filteredUsers = filteredUsers.OrderByDescending(x => prop == null ? "Id" : prop.GetValue(x, null)).ToList();
-            //}
 
             switch (filter.SortField?.ToLower())
             {
